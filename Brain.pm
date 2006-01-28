@@ -45,7 +45,7 @@ sub think()
       debug("Welcome to experience level $1.");
     }
     
-    if ($response =~ /(.*?) is displeased\./)
+    if ($response =~ /([a-zA-Z-.]+) is displeased\./)
     {
       $angry_deity = 1;
       debug("$1 is displeased. Aw crap.");
@@ -59,7 +59,7 @@ sub think()
     if ($response =~ /Call a (.*?):/)
     {
       debug("What was that $1 again?");
-      out ("\n");
+      out("\n");
       next;
     }
     
@@ -69,11 +69,6 @@ sub think()
       out("n");
       next;
     }
-
-    # note carefully the differences between the next two if statements.
-    #   the first tries to pick up a single known item
-    #   the second tries to pick up multiple unknown items
-    # these two if statements are calling different functions!
 
     if ($response =~ /There is a fountain here\./ && $xplevel >= 5 && $dip_for_excal)
     {
@@ -88,6 +83,11 @@ sub think()
       next;
     }
     
+    # note carefully the differences between the next two if statements.
+    #   the first tries to pick up a single known item
+    #   the second tries to pick up multiple unknown items
+    # these two if statements are calling different functions!
+
     if ($response =~ /You see here (?:an?|[0-9]+) (?:blessed |uncursed |cursed )?(.*?)\./)
     {
       next if (pickup_safefood($1));
@@ -176,7 +176,7 @@ sub think()
       next;
     }
 
-    if ($response =~ /(?:(?:the |an? )([-.a-z ]+?)|it) (?:just )?(?:hits|misses|bites|grabs|stings|touches)(?: you)?[.!]/i)
+    if ($response =~ /(?:(?:the |an? )([-.a-z ]+?)|it) (?:just )?(?:strikes|hits|misses|bites|grabs|stings|touches)(?:(?: at)? you(?:r displaced image)?)?[.!]/i)
     {
       debug("Counterattacking the $1.");
       attack($1);

@@ -50,10 +50,12 @@ sub negotiate_door($)
   my $attempts = 0;
   my $response;
 
+  # try opening it
   while ($attempts++ < 10)
   {
     out("o".$dir);
     $response = response();
+
     return 1 if $response =~ /The door opens\./;
     return 1 if $response =~ /This door is already open\./;
     next     if $response =~ /The door resists!/;
@@ -61,13 +63,16 @@ sub negotiate_door($)
     return -1; # something unexpected, let the Brain figure it out!
   }
 
+  # Opening it failed; it must be locked. Notice how I don't reset $attempts...
+
   while ($attempts++ < 10)
   {
     out("k".$dir);
     $response = response();
-    return 1 if $response =~ /As you kick the door, it crashes open!/;
-    return 1 if $response =~ /As you kick the door, it shatters to pieces!/;
+
+    return 1 if $response =~ /As you kick the door, it (?:crashes open|shatters to pieces)!/;
     next     if $response =~ /WHAMMM!!!/;
+    return -1; # something unexpected, let the Brain figure it out!
   }
 
   return 0;
